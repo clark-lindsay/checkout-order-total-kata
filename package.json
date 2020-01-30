@@ -1,0 +1,24 @@
+{
+  "name": "checkout-order-total-kata",
+  "version": "1.0.0",
+  "description": "Practicing TDD and defensive programming principles with TypeScript",
+  "main": "index.js",
+  "repository": "https://github.com/clark-lindsay/checkout-order-total-kata.git",
+  "author": "clark-lindsay <clarklindsay96@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "@types/jest": "^25.1.1",
+    "@types/mocha": "^7.0.1",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.1.0"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "@babel/preset-env": "^7.8.4",
+    "@types/node": "^13.5.3",
+    "typescript": "^3.7.5"
+  }
+}
