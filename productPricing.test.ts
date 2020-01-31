@@ -16,4 +16,8 @@ describe('getting the price of products', () => {
     it('throws an error if the product is priced by weight and no weight is given', () => {
         expect(() => getProductPrice('parmesan')).toThrow();
     });
+
+    it('can support a markdown on a product', () => {
+        expect(getProductPrice('black beans')).toEqual(0.79);
+    });
 });
