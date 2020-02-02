@@ -1,53 +1,40 @@
-const ProductDoesNotExistError = new Error(
-  "This product is not in the product catalog"
-);
-
-export function getProductPrice(
-  product: string,
-  weight: number = undefined
-): number {
-  if (!productPrices[product]) {
-    throw ProductDoesNotExistError;
+export function getProduct(name: string): Product {
+  if (!products[name]) {
+    throw new Error(`${name} does not exist in the product catalog`);
   }
-  var price = getUnitPrice(product);
-  const markdown = getMarkdown(product);
-  const isPricedByWeight = getIsPricedByWeight(product);
+  return products[name];
+}
 
-  price = applyMarkdown(price, markdown);
-  if (isPricedByWeight) {
-    price = calculateWeightedPrice(price, weight);
+export class Product {
+  private name: string = "";
+  private price: number = undefined;
+  private isPricedByWeight: boolean = false;
+  private markdown: number = 0;
+
+  constructor(name: string, price: number, isPricedByWeight: boolean) {
+    this.name = name;
+    this.price = price;
+    this.isPricedByWeight = isPricedByWeight;
   }
 
-  return price;
-}
-
-function getUnitPrice(product: string): number {
-  return productPrices[product].price;
-}
-
-function getMarkdown(product: string): number {
-  return productPrices[product].markdown;
-}
-
-function applyMarkdown(price: number, markdown: number): number {
-  return markdown ? price - markdown : price;
-}
-
-function getIsPricedByWeight(product: string): boolean {
-  return productPrices[product].isPricedByWeight;
-}
-
-function calculateWeightedPrice(price: number, weight: number): number {
-  if (!weight) {
-    throw Error(
-      `A weight must be given to calculate a price for a per pound product`
-    );
+  getPrice(weight?: number): number {
+    if (this.isPricedByWeight && !weight) {
+      throw Error(
+        `A weight must be given to calculate a price for a per pound product`
+      );
+    }
+    const totalPrice =
+      (weight ? this.price * weight : this.price) - this.markdown;
+    return totalPrice > 0 ? totalPrice : 0;
   }
-  return price * weight;
+
+  setMarkdown(priceReduction: number): void {
+    this.markdown = priceReduction;
+  }
 }
 
-const productPrices = {
-  linguine: { price: 1.49, isPricedByWeight: false },
-  parmesan: { price: 10, isPricedByWeight: true },
-  "black beans": { price: 0.89, isPricedByWeight: false, markdown: 0.1 }
+const products = {
+  linguine: new Product("linquine", 1.49, false),
+  parmesan: new Product("parmesan", 10, true),
+  "black beans": new Product("black beans", 0.89, false)
 };
