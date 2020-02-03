@@ -2,7 +2,7 @@ export function getProduct(name: string): Product {
   if (!products[name]) {
     throw new Error(`${name} does not exist in the product catalog`);
   }
-  return products[name];
+  return products[name]();
 }
 
 export class Product {
@@ -28,13 +28,17 @@ export class Product {
     return totalPrice > 0 ? totalPrice : 0;
   }
 
+  setBasePrice(cost: number): void {
+    this.price = cost;
+  }
+
   setMarkdown(priceReduction: number): void {
     this.markdown = priceReduction;
   }
 }
 
 const products = {
-  linguine: new Product("linquine", 1.49, false),
-  parmesan: new Product("parmesan", 10, true),
-  "black beans": new Product("black beans", 0.89, false)
+  linguine: () => new Product("linquine", 1.49, false),
+  parmesan: () => new Product("parmesan", 10, true),
+  "black beans": () => new Product("black beans", 0.89, false)
 };

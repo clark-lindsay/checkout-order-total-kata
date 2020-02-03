@@ -20,9 +20,26 @@ describe("getting the price of products", () => {
     expect(() => parmesan.getPrice()).toThrow();
   });
 
-  it("can support a markdown on a product", () => {
+  it("supports setting markdowns", () => {
     const beans = getProduct("black beans");
     beans.setMarkdown(0.1);
     expect(beans.getPrice()).toEqual(0.79);
+  });
+
+  it("does not have persistent changes if we generate a new product", () => {
+    const parmesan = getProduct("parmesan");
+    parmesan.setBasePrice(5);
+    expect(parmesan.getPrice(1)).toEqual(5);
+
+    const differentCheese = getProduct("parmesan");
+    expect(differentCheese.getPrice(1)).toEqual(10);
+  });
+
+  it("supports setting prices", () => {
+    const beans = getProduct("black beans");
+    beans.setBasePrice(1);
+    expect(beans.getPrice()).toEqual(1);
+    beans.setBasePrice(2);
+    expect(beans.getPrice()).toEqual(2);
   });
 });
