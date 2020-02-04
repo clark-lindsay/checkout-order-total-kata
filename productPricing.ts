@@ -47,7 +47,11 @@ export class Product {
 const products = {
   linguine: () => new Product("linquine", 1.49, false),
   parmesan: weight => new Product("parmesan", 10, true, weight),
-  "black beans": () => new Product("black beans", 0.89, false)
+  "black beans": () => new Product("black beans", 0.89, false),
+  "red lentils": weight => new Product("red lentils", 1, true, weight),
+  yogurt: () => new Product("yogurt", 4, false),
+  "almond milk": () => new Product("almond milk", 4, false),
+  banana: weight => new Product("banana", 0.77, true, weight)
 };
 
 const ProductDoesNotExistError = (name?: string) =>
