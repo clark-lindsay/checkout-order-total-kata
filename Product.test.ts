@@ -1,4 +1,4 @@
-import { getProduct } from "./productPricing";
+import { getProduct } from "./Product";
 
 describe("getting the price of products", () => {
   it("returns the price of a single valid item", () => {
