@@ -14,4 +14,15 @@ describe("the Cart object", () => {
     expect(cart.contains("parmesan")).toEqual(2.0);
     expect(cart.contains("yogurt")).toEqual(1.0);
   });
+
+  it("can tell you the total price of the items that are in the cart", () => {
+    const cart = new Cart();
+    const cheese = getProduct("parmesan", 2.5);
+    const almondMilk = getProduct("almond milk");
+
+    cart.add(cheese);
+    expect(cart.getPrice()).toEqual(25);
+    cart.add(almondMilk);
+    expect(cart.getPrice()).toEqual(29);
+  });
 });

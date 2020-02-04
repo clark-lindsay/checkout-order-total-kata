@@ -17,4 +17,15 @@ export class Cart {
     }
     return totalProduct;
   }
+
+  getPrice(): number {
+    return this.contents.reduce(totalCostReducer, 0);
+
+    function totalCostReducer(
+      accumulator: number,
+      currentValue: Product
+    ): number {
+      return accumulator + currentValue.getPrice();
+    }
+  }
 }
