@@ -35,6 +35,14 @@ export class Product {
     return totalPrice > 0 ? totalPrice : 0;
   }
 
+  getAmount(): number {
+    return this.isPricedByWeight ? this.weight : 1;
+  }
+
+  getName(): string {
+    return this.name;
+  }
+
   setBasePrice(cost: number): void {
     this.price = cost;
   }

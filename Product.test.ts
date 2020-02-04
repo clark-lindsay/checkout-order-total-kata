@@ -48,4 +48,12 @@ describe("getting the price of products", () => {
     beans.setBasePrice(2);
     expect(beans.getPrice()).toEqual(2);
   });
+
+  it("can tell you how much product is represented by a single object instance", () => {
+    const cheese = getProduct("parmesan", 1.5);
+    expect(cheese.getAmount()).toEqual(1.5);
+
+    const beans = getProduct("black beans");
+    expect(beans.getAmount()).toEqual(1);
+  });
 });
