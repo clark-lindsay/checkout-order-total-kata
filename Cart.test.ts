@@ -37,6 +37,9 @@ describe("the Cart object", () => {
     expect(cart.getPrice()).toEqual(6);
   });
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 22f02e1... supports n for x discounts now for products that are priced by weight
 
   it("supports N for X discounts that have a limit on the amount of products that can be affected", () => {
     const cart = new Cart();
@@ -60,6 +63,9 @@ describe("the Cart object", () => {
     cart.addNForXSpecial("parmesan", 2, 15);
     expect(cart.getPrice()).toEqual(20);
   });
+<<<<<<< HEAD
 =======
 >>>>>>> 781a2c0... support n for x discounts for items that are not priced by weight
+=======
+>>>>>>> 22f02e1... supports n for x discounts now for products that are priced by weight
 });
