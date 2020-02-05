@@ -25,4 +25,38 @@ describe("the Cart object", () => {
     cart.add(almondMilk);
     expect(cart.getPrice()).toEqual(29);
   });
+
+  it("supports discounts in the form of 'Buy N for $X' for items that are not priced by weight", () => {
+    const cart = new Cart();
+    const almondMilk = getProduct("almond milk");
+
+    cart.add(almondMilk);
+    cart.add(almondMilk);
+    expect(cart.getPrice()).toEqual(8);
+    cart.addNForXSpecial("almond milk", 2, 6);
+    expect(cart.getPrice()).toEqual(6);
+  });
+
+  it("supports N for X discounts that have a limit on the amount of products that can be affected", () => {
+    const cart = new Cart();
+    const almondMilk = getProduct("almond milk");
+
+    cart.add(almondMilk);
+    cart.add(almondMilk);
+    cart.add(almondMilk);
+    cart.add(almondMilk);
+    expect(cart.getPrice()).toEqual(16);
+    cart.addNForXSpecial("almond milk", 2, 6, 2);
+    expect(cart.getPrice()).toEqual(14);
+  });
+
+  it("supports N for X discounts for items that ARE priced by weight", () => {
+    const cart = new Cart();
+    const cheese = getProduct("parmesan", 2.5);
+
+    cart.add(cheese);
+    expect(cart.getPrice()).toEqual(25);
+    cart.addNForXSpecial("parmesan", 2, 15);
+    expect(cart.getPrice()).toEqual(20);
+  });
 });
