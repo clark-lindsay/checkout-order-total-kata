@@ -28,6 +28,9 @@ export class Cart {
     for (const special of this.nForXSpecials) {
       totalPrice -= this.calculateNForXDiscount(special);
     }
+    for (const special of this.bogoSpecials) {
+      totalPrice -= this.calculateBOGODiscount(special);
+    }
 
     return totalPrice;
 
@@ -41,8 +44,11 @@ export class Cart {
 
   private calculateNForXDiscount(special: NForXSpecial): number {
     let numApplicableItems: number = this.contains(special.productName);
-    if (special.productLimit) {
-      numApplicableItems = Math.min(numApplicableItems, special.productLimit);
+    if (special.totalProductLimit) {
+      numApplicableItems = Math.min(
+        numApplicableItems,
+        special.totalProductLimit
+      );
     }
     const numDiscountApplications = Math.floor(
       numApplicableItems / special.productThreshold
@@ -63,20 +69,47 @@ export class Cart {
     }
   }
 
+  private calculateBOGODiscount(special: BOGOSpecial): number {
+    let numApplicableItems: number = this.contains(special.productName);
+    if (special.totalProductLimit) {
+      numApplicableItems = Math.min(
+        numApplicableItems,
+        special.totalProductLimit
+      );
+    }
+
+    let totalAmountOfDiscountedProduct: number = 0;
+    while (numApplicableItems > special.productThreshold) {
+      numApplicableItems -= special.productThreshold;
+      let discountedProduct: number = Math.min(
+        special.amountOfDiscountedProduct,
+        numApplicableItems
+      );
+      numApplicableItems -= discountedProduct;
+      totalAmountOfDiscountedProduct +=
+        discountedProduct * special.discountPercentage;
+    }
+
+    return (
+      totalAmountOfDiscountedProduct *
+      getProduct(special.productName, 1).getPrice()
+    );
+  }
+
   // TODO: consider if there should be a generic 'addDiscount' function, which takes a special/discount object? might clarify responsibilities
   // TODO: consider taking in the arguments for this function as an object, to better self-document the code
   addNForXSpecial(
     productName: string,
     productThreshold: number,
     adjustedCost: number,
-    productLimit?: number
+    totalProductLimit?: number
   ): void {
     this.nForXSpecials.push(
       new NForXSpecial(
         productName,
         productThreshold,
         adjustedCost,
-        productLimit
+        totalProductLimit
       )
     );
   }
@@ -85,14 +118,16 @@ export class Cart {
     productName: string,
     productThreshold: number,
     amountOfDiscountedProduct: number,
-    discountPercentage: number
+    discountPercentage: number,
+    totalProductLimit?: number
   ): void {
     this.bogoSpecials.push(
       new BOGOSpecial(
         productName,
         productThreshold,
         amountOfDiscountedProduct,
-        discountPercentage
+        discountPercentage,
+        totalProductLimit
       )
     );
   }
@@ -102,15 +137,15 @@ class NForXSpecial {
   public productName: string;
   public productThreshold: number;
   public adjustedCost: number;
-  public productLimit: number;
+  public totalProductLimit: number;
   constructor(
     productName: string,
     productThreshold: number,
     adjustedCost: number,
-    productLimit?: number
+    totalProductLimit?: number
   ) {
     this.productName = productName;
-    this.productLimit = productLimit;
+    this.totalProductLimit = totalProductLimit;
     this.productThreshold = productThreshold;
     this.adjustedCost = adjustedCost;
   }
@@ -121,15 +156,23 @@ class BOGOSpecial {
   public productThreshold: number;
   public amountOfDiscountedProduct: number;
   public discountPercentage: number;
+  public totalProductLimit?: number;
   constructor(
     productName,
     productThreshold,
     amountOfDiscountedProduct,
-    discountPercentage
+    discountPercentage,
+    totalProductLimit
   ) {
+    if (discountPercentage <= 0 || discountPercentage > 1.0) {
+      throw new Error(
+        "The discount percent for a BOGO special must be in the range (0, 1]"
+      );
+    }
     this.productName = productName;
     this.productThreshold = productThreshold;
     this.amountOfDiscountedProduct = amountOfDiscountedProduct;
     this.discountPercentage = discountPercentage;
+    this.totalProductLimit = totalProductLimit;
   }
 }

@@ -66,7 +66,7 @@ describe("the Cart object", () => {
 
     cart.add(cheese);
     expect(cart.getPrice()).toEqual(30);
-    cart.addBOGOSpecial("parmesan", 2, 1, 20);
+    cart.addBOGOSpecial("parmesan", 2, 1, 1);
     expect(cart.getPrice()).toEqual(20);
   });
 });
