@@ -3,9 +3,9 @@ import { Product, getProduct } from "./Product";
 export class Cart {
   private contents: Product[] = [];
   private nForXSpecials: NForXSpecial[] = [];
+  private bogoSpecials: BOGOSpecial[] = [];
   constructor() {}
 
-  // TODO: change this so that you can just give a name and an optional weight; then product is entirely abstracted away
   add(item: Product) {
     this.contents.push(item);
   }
@@ -45,7 +45,7 @@ export class Cart {
       numApplicableItems = Math.min(numApplicableItems, special.productLimit);
     }
     const numDiscountApplications = Math.floor(
-      numApplicableItems / special.amountOfItems
+      numApplicableItems / special.productThreshold
     );
 
     return getBaseCostOfAffectedItems() - getSpecialCostOfAffectedItems();
@@ -53,7 +53,7 @@ export class Cart {
     function getBaseCostOfAffectedItems(): number {
       return (
         numDiscountApplications *
-        special.amountOfItems *
+        special.productThreshold *
         getProduct(special.productName, 1).getPrice()
       );
     }
@@ -63,32 +63,72 @@ export class Cart {
     }
   }
 
+  // TODO: consider taking in the arguments for this function as an object, to better self-document the code
   addNForXSpecial(
     productName: string,
-    amountOfItems: number,
+    productThreshold: number,
     adjustedCost: number,
     productLimit?: number
-  ) {
+  ): void {
     this.nForXSpecials.push(
-      new NForXSpecial(productName, amountOfItems, adjustedCost, productLimit)
+      new NForXSpecial(
+        productName,
+        productThreshold,
+        adjustedCost,
+        productLimit
+      )
+    );
+  }
+
+  addBOGOSpecial(
+    productName: string,
+    productThreshold: number,
+    amountOfDiscountedProduct: number,
+    discountPercentage: number
+  ): void {
+    this.bogoSpecials.push(
+      new BOGOSpecial(
+        productName,
+        productThreshold,
+        amountOfDiscountedProduct,
+        discountPercentage
+      )
     );
   }
 }
 
 class NForXSpecial {
   public productName: string;
-  public amountOfItems: number;
+  public productThreshold: number;
   public adjustedCost: number;
   public productLimit: number;
   constructor(
     productName: string,
-    amountOfItems: number,
+    productThreshold: number,
     adjustedCost: number,
     productLimit?: number
   ) {
     this.productName = productName;
     this.productLimit = productLimit;
-    this.amountOfItems = amountOfItems;
+    this.productThreshold = productThreshold;
     this.adjustedCost = adjustedCost;
+  }
+}
+
+class BOGOSpecial {
+  public productName: string;
+  public productThreshold: number;
+  public amountOfDiscountedProduct: number;
+  public discountPercentage: number;
+  constructor(
+    productName,
+    productThreshold,
+    amountOfDiscountedProduct,
+    discountPercentage
+  ) {
+    this.productName = productName;
+    this.productThreshold = productThreshold;
+    this.amountOfDiscountedProduct = amountOfDiscountedProduct;
+    this.discountPercentage = discountPercentage;
   }
 }

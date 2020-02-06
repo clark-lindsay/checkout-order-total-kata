@@ -59,4 +59,14 @@ describe("the Cart object", () => {
     cart.addNForXSpecial("parmesan", 2, 15);
     expect(cart.getPrice()).toEqual(20);
   });
+
+  it("supports discounts in the form 'Buy N, get M for X% off'", () => {
+    const cart = new Cart();
+    const cheese = getProduct("parmesan", 3);
+
+    cart.add(cheese);
+    expect(cart.getPrice()).toEqual(30);
+    cart.addBOGOSpecial("parmesan", 2, 1, 20);
+    expect(cart.getPrice()).toEqual(20);
+  });
 });
