@@ -24,19 +24,25 @@ export class Cart {
 
   getPrice(): number {
     let totalPrice: number = this.contents.reduce(totalCostReducer, 0);
-
-    for (const special of this.nForXSpecials) {
-      totalPrice -= this.calculateNForXDiscount(special);
-    }
-    for (const special of this.bogoSpecials) {
-      totalPrice -= this.calculateBOGODiscount(special);
-    }
+    totalPrice -= this.getTotalDiscount();
 
     return totalPrice;
 
     function totalCostReducer(accumulator: number, currentValue: Product): number {
       return accumulator + currentValue.getPrice();
     }
+  }
+
+  private getTotalDiscount(): number {
+    let totalDiscount: number = 0;
+    for (const special of this.nForXSpecials) {
+      totalDiscount += this.calculateNForXDiscount(special);
+    }
+    for (const special of this.bogoSpecials) {
+      totalDiscount += this.calculateBOGODiscount(special);
+    }
+
+    return totalDiscount;
   }
 
   private calculateNForXDiscount(special: NForXSpecial): number {
