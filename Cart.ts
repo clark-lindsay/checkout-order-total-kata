@@ -63,6 +63,7 @@ export class Cart {
     }
   }
 
+  // TODO: consider if there should be a generic 'addDiscount' function, which takes a special/discount object? might clarify responsibilities
   // TODO: consider taking in the arguments for this function as an object, to better self-document the code
   addNForXSpecial(
     productName: string,
