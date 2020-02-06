@@ -43,13 +43,7 @@ export class Cart {
   }
 
   private calculateNForXDiscount(special: NForXSpecial): number {
-    let numApplicableItems: number = this.contains(special.productName);
-    if (special.totalProductLimit) {
-      numApplicableItems = Math.min(
-        numApplicableItems,
-        special.totalProductLimit
-      );
-    }
+    const numApplicableItems = this.getNumberOfItemsAffectedBySpecial(special);
     const numDiscountApplications = Math.floor(
       numApplicableItems / special.productThreshold
     );
@@ -70,14 +64,7 @@ export class Cart {
   }
 
   private calculateBOGODiscount(special: BOGOSpecial): number {
-    let numApplicableItems: number = this.contains(special.productName);
-    if (special.totalProductLimit) {
-      numApplicableItems = Math.min(
-        numApplicableItems,
-        special.totalProductLimit
-      );
-    }
-
+    let numApplicableItems = this.getNumberOfItemsAffectedBySpecial(special);
     let totalAmountOfDiscountedProduct: number = 0;
     while (numApplicableItems > special.productThreshold) {
       numApplicableItems -= special.productThreshold;
@@ -94,6 +81,16 @@ export class Cart {
       totalAmountOfDiscountedProduct *
       getProduct(special.productName, 1).getPrice()
     );
+  }
+
+  private getNumberOfItemsAffectedBySpecial(
+    special: BOGOSpecial | NForXSpecial
+  ): number {
+    let numAffectedItems: number = this.contains(special.productName);
+    if (special.totalProductLimit) {
+      numAffectedItems = Math.min(numAffectedItems, special.totalProductLimit);
+    }
+    return numAffectedItems;
   }
 
   // TODO: consider if there should be a generic 'addDiscount' function, which takes a special/discount object? might clarify responsibilities

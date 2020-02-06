@@ -60,7 +60,7 @@ describe("the Cart object", () => {
     expect(cart.getPrice()).toEqual(20);
   });
 
-  it("supports discounts in the form 'Buy N, get M for X% off'", () => {
+  it("supports discounts in the form 'Buy N, get M for X% off' for items that are priced by weight", () => {
     const cart = new Cart();
     const cheese = getProduct("parmesan", 3);
 
@@ -68,5 +68,17 @@ describe("the Cart object", () => {
     expect(cart.getPrice()).toEqual(30);
     cart.addBOGOSpecial("parmesan", 2, 1, 1);
     expect(cart.getPrice()).toEqual(20);
+  });
+
+  it("supports discounts in the form 'Buy N, get M for X% off'", () => {
+    const cart = new Cart();
+    const yogurt = getProduct("yogurt");
+
+    cart.add(yogurt);
+    cart.add(yogurt);
+    cart.add(yogurt);
+    expect(cart.getPrice()).toEqual(12);
+    cart.addBOGOSpecial("yogurt", 2, 1, 1);
+    expect(cart.getPrice()).toEqual(8);
   });
 });
