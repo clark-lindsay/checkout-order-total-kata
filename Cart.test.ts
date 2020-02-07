@@ -1,4 +1,5 @@
 import { Cart } from './Cart';
+import { cachedDataVersionTag } from 'v8';
 
 describe('the Cart object', () => {
   it('can add an item, and determine how much of that item is in the cart', () => {
@@ -62,6 +63,17 @@ describe('the Cart object', () => {
     expect(cart.getPrice()).toEqual(25);
     cart.addNForXSpecial('parmesan', 2, 15);
     expect(cart.getPrice()).toEqual(20);
+  });
+
+  it('will invalidate an N for X discount if an item that puts the threshold at N is removed from the cart', () => {
+    const cart = new Cart();
+
+    cart.add('almond milk', 4);
+    expect(cart.getPrice()).toEqual(16);
+    cart.addNForXSpecial('almond milk', 2, 6);
+    expect(cart.getPrice()).toEqual(12);
+    cart.remove('almond milk', 1);
+    expect(cart.getPrice()).toEqual(10);
   });
 
   it("supports discounts in the form 'Buy N, get M for X% off' for items that are priced by weight", () => {
