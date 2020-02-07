@@ -12,6 +12,13 @@ describe('the Cart object', () => {
     expect(cart.contains('yogurt')).toEqual(1.0);
   });
 
+  it('will throw an error if an item is added with an amount <= 0', () => {
+    const cart = new Cart();
+
+    expect(() => cart.add('linguine', 0)).toThrow();
+    expect(() => cart.add('parmesan', -1)).toThrow();
+  });
+
   it('can tell you the total price of the items that are in the cart', () => {
     const cart = new Cart();
 
