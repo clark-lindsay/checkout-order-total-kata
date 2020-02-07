@@ -1,5 +1,6 @@
 import { Cart } from './Cart';
 import { cachedDataVersionTag } from 'v8';
+import { createTracing } from 'trace_events';
 
 describe('the Cart object', () => {
   it('can add an item, and determine how much of that item is in the cart', () => {
@@ -92,5 +93,15 @@ describe('the Cart object', () => {
     expect(cart.getPrice()).toEqual(12);
     cart.addBOGOSpecial('yogurt', 2, 1, 1);
     expect(cart.getPrice()).toEqual(8);
+  });
+
+  it('invalidates a BOGO special if an item is removed such that the amount in the cart no longer qualifies for the special', () => {
+    const cart = new Cart();
+
+    cart.add('parmesan', 3);
+    cart.addBOGOSpecial('parmesan', 2, 1, 1);
+    expect(cart.getPrice()).toEqual(20);
+    cart.remove('parmesan', 1.5);
+    expect(cart.getPrice()).toEqual(15);
   });
 });
