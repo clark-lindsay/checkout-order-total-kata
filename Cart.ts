@@ -7,8 +7,19 @@ export class Cart {
   private bogoSpecials: BOGOSpecial[] = [];
   constructor() {}
 
-  add(item: Product) {
-    this.contents.push(item);
+  add(productName: string, amountOrWeight: number): void {
+    if (amountOrWeight <= 0) {
+      throw new Error('The amount of product to be added to the cart must be greater than 0');
+    }
+    if (this.contains(productName)) {
+      for (const item of this.contents) {
+        if (item.getName() === productName) {
+          item.setAmount(item.getAmount() + amountOrWeight);
+        }
+      }
+    } else {
+      this.contents.push(getProduct(productName, amountOrWeight));
+    }
   }
 
   contains(productName: string) {
