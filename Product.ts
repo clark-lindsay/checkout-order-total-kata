@@ -1,42 +1,39 @@
-export function getProduct(name: string, weight?: number): Product {
+export function getProduct(name: string, amountOrWeight?: number): Product {
   if (!products[name]) {
     throw ProductDoesNotExistError(name);
   }
-  return products[name](weight);
+  return products[name](amountOrWeight);
 }
 
 export class Product {
-  private name: string = "";
+  private name: string = '';
   private price: number = undefined;
   private isPricedByWeight: boolean = false;
-  private weight: number = 0;
+  private amountOrWeight: number = 0;
   private markdown: number = 0;
 
-  constructor(
-    name: string,
-    price: number,
-    isPricedByWeight: boolean,
-    weight?: number
-  ) {
-    if (isPricedByWeight && !weight) {
+  constructor(name: string, price: number, isPricedByWeight: boolean, amountOrWeight?: number) {
+    if (isPricedByWeight && !amountOrWeight) {
       throw ProductNeedsWeightError(name);
     }
     this.name = name;
     this.price = price;
     this.isPricedByWeight = isPricedByWeight;
-    this.weight = weight || 1;
+    this.amountOrWeight = amountOrWeight || 1;
   }
 
   getPrice(): number {
     const priceAfterMarkdown = this.price - this.markdown;
-    const totalPrice = this.isPricedByWeight
-      ? priceAfterMarkdown * this.weight
-      : priceAfterMarkdown;
+    const totalPrice = this.amountOrWeight * priceAfterMarkdown;
     return totalPrice > 0 ? totalPrice : 0;
   }
 
   getAmount(): number {
-    return this.isPricedByWeight ? this.weight : 1;
+    return this.amountOrWeight;
+  }
+
+  setAmount(amountOrWeight: number): void {
+    this.amountOrWeight = amountOrWeight;
   }
 
   getName(): string {
@@ -53,17 +50,17 @@ export class Product {
 }
 
 const products = {
-  linguine: () => new Product("linquine", 1.49, false),
-  parmesan: weight => new Product("parmesan", 10, true, weight),
-  "black beans": () => new Product("black beans", 0.89, false),
-  "red lentils": weight => new Product("red lentils", 1, true, weight),
-  yogurt: () => new Product("yogurt", 4, false),
-  "almond milk": () => new Product("almond milk", 4, false),
-  banana: weight => new Product("banana", 0.77, true, weight)
+  linguine: amount => new Product('linquine', 1.49, false, amount),
+  parmesan: weight => new Product('parmesan', 10, true, weight),
+  'black beans': amount => new Product('black beans', 0.89, false, amount),
+  'red lentils': weight => new Product('red lentils', 1, true, weight),
+  yogurt: amount => new Product('yogurt', 4, false, amount),
+  'almond milk': amount => new Product('almond milk', 4, false, amount),
+  banana: weight => new Product('banana', 0.77, true, weight)
 };
 
 const ProductDoesNotExistError = (name?: string) =>
-  new Error(`${name || "This product"} does not exist in the product catalog.`);
+  new Error(`${name || 'This product'} does not exist in the product catalog.`);
 const ProductNeedsWeightError = (name?: string) => {
   new Error(
     `${name} is priced by weight. A weight must be given to calcultate the price of a product that is priced by weight.`

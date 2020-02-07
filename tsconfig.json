@@ -1,6 +1,7 @@
 {
-    "compilerOptions": {
-        "types": ["node", "jest"]
-    },
-    "compileOnSave": true
+  "compilerOptions": {
+    "types": ["node", "jest"],
+    "target": "ES6"
+  },
+  "compileOnSave": true
 }

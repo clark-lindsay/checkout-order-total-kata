@@ -23,6 +23,19 @@ export class Cart {
     return totalProduct;
   }
 
+  remove(productName: string, amount: number): void {
+    if (this.contains(productName)) {
+      for (const [index, item] of this.contents.entries()) {
+        if (item.getName() === productName) {
+          item.setAmount(item.getAmount() - amount);
+          if (item.getAmount() <= 0) {
+            this.contents.splice(index, 1);
+          }
+        }
+      }
+    }
+  }
+
   getPrice(): number {
     let totalPrice: number = this.contents.reduce(totalCostReducer, 0);
     totalPrice -= this.getTotalDiscount();
