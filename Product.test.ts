@@ -62,5 +62,8 @@ describe('getting the price of products', () => {
 
     const beans = getProduct('black beans');
     expect(beans.getAmount()).toEqual(1);
+
+    const yogurt = getProduct('yogurt', 3);
+    expect(yogurt.getAmount()).toEqual(3);
   });
 });

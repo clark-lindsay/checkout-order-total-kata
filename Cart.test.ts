@@ -38,9 +38,8 @@ describe('the Cart object', () => {
 
   it("supports discounts in the form of 'Buy N for $X' for items that are not priced by weight", () => {
     const cart = new Cart();
-    const almondMilk = getProduct('almond milk');
+    const almondMilk = getProduct('almond milk', 2);
 
-    cart.add(almondMilk);
     cart.add(almondMilk);
     expect(cart.getPrice()).toEqual(8);
     cart.addNForXSpecial('almond milk', 2, 6);
@@ -49,11 +48,8 @@ describe('the Cart object', () => {
 
   it('supports N for X discounts that have a limit on the amount of products that can be affected', () => {
     const cart = new Cart();
-    const almondMilk = getProduct('almond milk');
+    const almondMilk = getProduct('almond milk', 4);
 
-    cart.add(almondMilk);
-    cart.add(almondMilk);
-    cart.add(almondMilk);
     cart.add(almondMilk);
     expect(cart.getPrice()).toEqual(16);
     cart.addNForXSpecial('almond milk', 2, 6, 2);
@@ -82,10 +78,8 @@ describe('the Cart object', () => {
 
   it("supports discounts in the form 'Buy N, get M for X% off'", () => {
     const cart = new Cart();
-    const yogurt = getProduct('yogurt');
+    const yogurt = getProduct('yogurt', 3);
 
-    cart.add(yogurt);
-    cart.add(yogurt);
     cart.add(yogurt);
     expect(cart.getPrice()).toEqual(12);
     cart.addBOGOSpecial('yogurt', 2, 1, 1);
