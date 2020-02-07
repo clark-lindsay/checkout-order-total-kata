@@ -2,7 +2,7 @@ import { Product, getProduct } from './Product';
 import { NForXSpecial, BOGOSpecial } from './Specials';
 
 export class Cart {
-  private contents: Product[] = [];
+  private contents = new Map<string, Product>();
   private nForXSpecials: NForXSpecial[] = [];
   private bogoSpecials: BOGOSpecial[] = [];
   constructor() {}
@@ -12,50 +12,38 @@ export class Cart {
       throw new Error('The amount of product to be added to the cart must be greater than 0');
     }
     if (this.contains(productName)) {
-      for (const item of this.contents) {
-        if (item.getName() === productName) {
-          item.setAmount(item.getAmount() + amountOrWeight);
-        }
-      }
+      const item = this.contents.get(productName);
+      item.setAmount(item.getAmount() + amountOrWeight);
     } else {
-      this.contents.push(getProduct(productName, amountOrWeight));
+      this.contents.set(productName, getProduct(productName, amountOrWeight));
     }
   }
 
   contains(productName: string) {
-    let totalProduct: number = 0;
-
-    for (const item of this.contents) {
-      if (item.getName() === productName) {
-        totalProduct += item.getAmount();
-      }
+    if (this.contents.has(productName)) {
+      return this.contents.get(productName).getAmount();
     }
-
-    return totalProduct;
+    return 0;
   }
 
   remove(productName: string, amount: number): void {
     if (this.contains(productName)) {
-      for (const [index, item] of this.contents.entries()) {
-        if (item.getName() === productName) {
-          item.setAmount(item.getAmount() - amount);
-          if (item.getAmount() <= 0) {
-            this.contents.splice(index, 1);
-          }
-        }
+      const item = this.contents.get(productName);
+      item.setAmount(item.getAmount() - amount);
+      if (item.getAmount() <= 0) {
+        this.contents.delete(productName);
       }
     }
   }
 
   getPrice(): number {
-    let totalPrice: number = this.contents.reduce(totalCostReducer, 0);
+    let totalPrice = 0;
+    for (const item of this.contents.values()) {
+      totalPrice += item.getPrice();
+    }
     totalPrice -= this.getTotalDiscount();
 
     return totalPrice;
-
-    function totalCostReducer(accumulator: number, currentValue: Product): number {
-      return accumulator + currentValue.getPrice();
-    }
   }
 
   private getTotalDiscount(): number {
@@ -71,8 +59,6 @@ export class Cart {
     return totalDiscount;
   }
 
-  // TODO: consider if there should be a generic 'addDiscount' function, which takes a special/discount object? might clarify responsibilities
-  // TODO: consider taking in the arguments for this function as an object, to better self-document the code
   addNForXSpecial(
     productName: string,
     productThreshold: number,
